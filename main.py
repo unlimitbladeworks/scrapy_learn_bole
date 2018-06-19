@@ -7,7 +7,7 @@
 
 @time: 2018/6/18 17:46
 
-@desc:
+@desc: debug 's Tips
 
 """
 from scrapy.cmdline import execute
