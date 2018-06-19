@@ -12,21 +12,24 @@ class JobboleSpider(scrapy.Spider):
     def parse(self, response):
         # 标题
         article_title = response.xpath('//div[@class="entry-header"]/h1/text()').extract()[0]
+        print(article_title)
         # 时间
         article_time = response.xpath('//p[@class="entry-meta-hide-on-mobile"]/text()').extract()[0].strip().replace(
             '·', '').strip()
+        print(article_time)
         # 点赞数
         article_praise = response.xpath('//span[contains(@class,"vote-post-up")]/h10/text()').extract()[0]
+        print(article_praise)
         # 收藏数
         bookmark = response.xpath('//span[contains(@class,"bookmark-btn")]/text()').extract()[0]
         # 正则提取收藏数字
         match_bookmark = re.match('.*(\d+).*', bookmark)
         if match_bookmark:
             article_bookmark = match_bookmark.group(1)
+            print(article_bookmark)
         # 评论数
         comments = response.xpath('//a[@href="#article-comment"]/text()').extract()[0]
         match_comments = re.match('.*(\d+).*', bookmark)
         if match_comments:
             article_comments = match_comments.group(1)
-
-        pass
+            print(article_comments)
