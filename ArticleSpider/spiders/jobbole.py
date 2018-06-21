@@ -50,22 +50,21 @@ class JobboleSpider(scrapy.Spider):
         tag_list = [element for element in tag_list if not element.strip().endswith("评论")]
         tags = ','.join(tag_list)
         print(tags)
-
         """ --------------    xpath 案例 end    --------------"""
 
         """ --------------    css   案例 start    --------------"""
-        # 标题
-        article_title_css = response.css('div.entry-header h1::text').extract()[0]
+        # 标题  extract_first()防止数组越界
+        article_title_css = response.css('div.entry-header h1::text').extract_first()
 
         # 时间
-        article_time_css = response.css('p.entry-meta-hide-on-mobile::text').extract()[0].strip().replace(
+        article_time_css = response.css('p.entry-meta-hide-on-mobile::text').extract_first().strip().replace(
             '·', '').strip()
 
         # 点赞数
-        article_praise_css = response.css('#112048votetotal::text').extract()[0]
+        article_praise_css = response.css('#112048votetotal::text').extract_first()
 
         # 收藏数
-        bookmark_css = response.css('.btn-bluet-bigger.href-style.bookmark-btn.register-user-only::text').extract()[0]
+        bookmark_css = response.css('.btn-bluet-bigger.href-style.bookmark-btn.register-user-only::text').extract_first()
         # 正则提取收藏数字
         match_bookmark_css = re.match('.*(\d+).*', bookmark_css)
         if match_bookmark_css:
@@ -73,7 +72,7 @@ class JobboleSpider(scrapy.Spider):
             print(article_bookmark_css)
 
         # 评论数
-        comments_css = response.css('a[href="#article-comment"] span::text').extract()[0]
+        comments_css = response.css('a[href="#article-comment"] span::text').extract_first()
         match_comments_css = re.match('.*(\d+).*', comments_css)
         if match_comments_css:
             article_comments_css = match_comments_css.group(1)
@@ -82,5 +81,10 @@ class JobboleSpider(scrapy.Spider):
         article_contents_css = response.css('.entry').extract()[0]
 
         # 文章标签
+        tag_list_css = response.css('p.entry-meta-hide-on-mobile a::text').extract()
+        # 去重标签
+        tag_list_css = [element for element in tag_list_css if not element.strip().endswith("评论")]
+        tags_css = ','.join(tag_list_css)
+        print(tags_css)
 
         """ --------------    css   案例 end    --------------"""
