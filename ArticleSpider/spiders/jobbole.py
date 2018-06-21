@@ -33,3 +33,14 @@ class JobboleSpider(scrapy.Spider):
         if match_comments:
             article_comments = match_comments.group(1)
             print(article_comments)
+
+        # 文章详情
+        article_contents = response.xpath('//div[@class="entry"]').extract()[0]
+
+        # 文章标签
+        tag_list = response.xpath('//p[@class="entry-meta-hide-on-mobile"]/a/text()').extract()
+        # 去重标签
+        tag_list = [element for element in tag_list if not element.strip().endswith("评论")]
+        tags = ','.join(tag_list)
+        print(tags)
+
