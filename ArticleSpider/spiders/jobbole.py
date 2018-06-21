@@ -10,6 +10,8 @@ class JobboleSpider(scrapy.Spider):
     start_urls = ['http://blog.jobbole.com/112048/']
 
     def parse(self, response):
+
+        """ --------------    xpath 案例 start    --------------"""
         # 标题
         article_title = response.xpath('//div[@class="entry-header"]/h1/text()').extract()[0]
         print(article_title)
@@ -44,3 +46,23 @@ class JobboleSpider(scrapy.Spider):
         tags = ','.join(tag_list)
         print(tags)
 
+        """ --------------    xpath 案例 end    --------------"""
+
+        """ --------------    css   案例 start    --------------"""
+        # 标题
+
+        # 时间
+
+        # 点赞数
+
+        # 收藏数
+
+        # 评论数
+
+        # 文章详情
+
+        # 文章标签
+
+
+
+        """ --------------    css   案例 end    --------------"""
