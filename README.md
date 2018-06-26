@@ -42,3 +42,15 @@ scrapy_learn_bole/
         spiders/
             __init__.py
             ...
+
+## 第三步
+
+进入ArticleSpider目录,执行命令:
+
+`cd ArticleSpider`
+
+进入后,执行命令:
+
+`scrapy genspider jobbole blog.jobble.com`
+
+随后在spiders目录下生成了属于我们自己的py爬虫文件--jobbole.py
