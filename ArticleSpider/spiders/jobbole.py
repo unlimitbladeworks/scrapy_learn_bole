@@ -11,7 +11,7 @@ class JobboleSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        """ --------------    xpath 案例 start    --------------"""
+        """ --------------    xpath 案例 start    --------------
         # 标题
         article_title = response.xpath('//div[@class="entry-header"]/h1/text()').extract()[0]
         print(article_title)
@@ -50,7 +50,7 @@ class JobboleSpider(scrapy.Spider):
         tag_list = [element for element in tag_list if not element.strip().endswith("评论")]
         tags = ','.join(tag_list)
         print(tags)
-        """ --------------    xpath 案例 end    --------------"""
+        --------------    xpath 案例 end    --------------"""
 
         """ --------------    css   案例 start    --------------"""
         # 标题  extract_first()防止数组越界
