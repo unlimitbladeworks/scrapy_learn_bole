@@ -27,6 +27,7 @@ https://scrapy-chs.readthedocs.io/zh_CN/1.0/intro/tutorial.html
 
 创建目录如下:
 
+```
 scrapy_learn_bole/
     scrapy.cfg
 
@@ -42,6 +43,7 @@ scrapy_learn_bole/
         spiders/
             __init__.py
             ...
+```
 
 ## 第三步
 
