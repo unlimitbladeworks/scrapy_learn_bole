@@ -7,7 +7,8 @@
 - Anaconda(可选)
 - Scrapy库
 
-另:Scrapy库官方文档----如下,
+另:Scrapy库官方文档----
+
 https://scrapy-chs.readthedocs.io/zh_CN/1.0/intro/tutorial.html
 
 ----
