@@ -14,11 +14,15 @@ https://scrapy-chs.readthedocs.io/zh_CN/1.0/intro/tutorial.html
 ----
 ## 第一步
 创建一个Scrapy项目的文件夹--scrapy_learn_bole
-进入目录中,执行性:
+
+进入目录中,执行命令:
+
 `cd scrapy_learn_bole`
 
 ## 第二步
+
 执行命令:
+
 `scrapy startproject ArticleSpider`
 
 创建目录如下:
