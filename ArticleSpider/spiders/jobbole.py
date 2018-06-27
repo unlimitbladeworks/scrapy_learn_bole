@@ -11,47 +11,6 @@ class JobboleSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        """ --------------    xpath 案例 start    --------------
-        # 标题
-        article_title = response.xpath('//div[@class="entry-header"]/h1/text()').extract()[0]
-        print(article_title)
-
-        # 时间
-        article_time = response.xpath('//p[@class="entry-meta-hide-on-mobile"]/text()').extract()[0].strip().replace(
-            '·', '').strip()
-
-        print(article_time)
-        # 点赞数
-        article_praise = response.xpath('//span[contains(@class,"vote-post-up")]/h10/text()').extract()[0]
-        print(article_praise)
-
-        # 收藏数
-        bookmark = response.xpath('//span[contains(@class,"bookmark-btn")]/text()').extract()[0]
-        # 正则提取收藏数字
-        match_bookmark = re.match('.*(\d+).*', bookmark)
-        if match_bookmark:
-            article_bookmark = match_bookmark.group(1)
-            print(article_bookmark)
-
-        # 评论数
-        comments = response.xpath('//a[@href="#article-comment"]/text()').extract()[0]
-        match_comments = re.match('.*(\d+).*', comments)
-        if match_comments:
-            article_comments = match_comments.group(1)
-            print(article_comments)
-
-        # 文章详情
-        article_contents = response.xpath('//div[@class="entry"]').extract()[0]
-
-        # 文章标签
-        tag_list = response.xpath('//p[@class="entry-meta-hide-on-mobile"]/a/text()').extract()
-
-        # 去重标签
-        tag_list = [element for element in tag_list if not element.strip().endswith("评论")]
-        tags = ','.join(tag_list)
-        print(tags)
-        --------------    xpath 案例 end    --------------"""
-
         """ --------------    css   案例 start    --------------"""
         # 标题  extract_first()防止数组越界
         article_title_css = response.css('div.entry-header h1::text').extract_first()
@@ -64,7 +23,8 @@ class JobboleSpider(scrapy.Spider):
         article_praise_css = response.css('#112048votetotal::text').extract_first()
 
         # 收藏数
-        bookmark_css = response.css('.btn-bluet-bigger.href-style.bookmark-btn.register-user-only::text').extract_first()
+        bookmark_css = response.css(
+            '.btn-bluet-bigger.href-style.bookmark-btn.register-user-only::text').extract_first()
         # 正则提取收藏数字
         match_bookmark_css = re.match('.*(\d+).*', bookmark_css)
         if match_bookmark_css:
