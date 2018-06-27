@@ -7,7 +7,7 @@ class JobboleSpider(scrapy.Spider):
     name = 'jobbole'
     allowed_domains = ['blog.jobbole.com']
     # start_urls = ['http://blog.jobbole.com/']
-    start_urls = ['http://blog.jobbole.com/112048/']
+    start_urls = ['http://blog.jobbole.com/all-posts/']
 
     def parse(self, response):
 
@@ -16,7 +16,7 @@ class JobboleSpider(scrapy.Spider):
         2. 获取下一页的url并交给scrapy下载,完成后交给parse
         """
         # 解析列表页中的所有文章url并交给scrapy下载后解析
-        post_urls = response.css('.floated-thumb .post-thumb a::attr(href)')
+        post_urls = response.css('#archive .floated-thumb .post-thumb a::attr(href)').extract()
         for post_url in post_urls:
             print(post_url)
 
