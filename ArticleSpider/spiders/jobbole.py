@@ -11,6 +11,15 @@ class JobboleSpider(scrapy.Spider):
 
     def parse(self, response):
 
+        """
+        1. 获取文章列表的url进行解析
+        2. 获取下一页的url并交给scrapy下载,完成后交给parse
+        """
+        # 解析列表页中的所有文章url并交给scrapy下载后解析
+        post_urls = response.css('.floated-thumb .post-thumb a::attr(href)')
+        for post_url in post_urls:
+            print(post_url)
+
         """ --------------    css   案例 start    --------------"""
         # 标题  extract_first()防止数组越界
         article_title_css = response.css('div.entry-header h1::text').extract_first()
