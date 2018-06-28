@@ -3,6 +3,7 @@ import scrapy
 import re
 from scrapy import Request
 from urllib import parse
+from ArticleSpider.items import JobBoleArticleItem
 
 
 class JobboleSpider(scrapy.Spider):
@@ -35,9 +36,11 @@ class JobboleSpider(scrapy.Spider):
 
     # 提取文章具体逻辑(文章详情)
     def parse_detail(self, response):
+        # 实例化一个jobboleitem
+        article_item = JobBoleArticleItem()
 
         # 获取meta,获取到Request的封面图提取出来
-        front_image_url = response.meta.get('front_image_url','')
+        front_image_url = response.meta.get('front_image_url', '')
 
         """ --------------    css   案例 start    --------------"""
         # 标题  extract_first()防止数组越界
@@ -80,3 +83,5 @@ class JobboleSpider(scrapy.Spider):
         print(tags_css)
 
         """ --------------    css   案例 end    --------------"""
+
+        article_item["title"] = article_title_css
