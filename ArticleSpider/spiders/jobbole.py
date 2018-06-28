@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import re
-
+from scrapy import Request
+from urllib import parse
 
 class JobboleSpider(scrapy.Spider):
     name = 'jobbole'
@@ -18,8 +19,16 @@ class JobboleSpider(scrapy.Spider):
         # 解析列表页中的所有文章url并交给scrapy下载后解析
         post_urls = response.css('#archive .floated-thumb .post-thumb a::attr(href)').extract()
         for post_url in post_urls:
-            print(post_url)
+            # 通过yield 交给scrapy处理
+            yield Request(url=parse.urljoin(response.url,post_url), callback=self.parse_detail)
 
+        # 提取下一页交给scrapy进行下载
+        next_url = response.css('.next.page-numbers::attr(href)').extract_first()
+        if next_url:
+            yield Request(url=parse.urljoin(response.url, post_url), callback=self.parse)
+
+    # 提取文章具体逻辑(文章详情)
+    def parse_detail(self, response):
         """ --------------    css   案例 start    --------------"""
         # 标题  extract_first()防止数组越界
         article_title_css = response.css('div.entry-header h1::text').extract_first()
@@ -37,15 +46,19 @@ class JobboleSpider(scrapy.Spider):
         # 正则提取收藏数字
         match_bookmark_css = re.match('.*(\d+).*', bookmark_css)
         if match_bookmark_css:
-            article_bookmark_css = match_bookmark_css.group(1)
+            article_bookmark_css = int(match_bookmark_css.group(1))
             print(article_bookmark_css)
+        else:
+            article_bookmark_css = 0
 
         # 评论数
         comments_css = response.css('a[href="#article-comment"] span::text').extract_first()
         match_comments_css = re.match('.*(\d+).*', comments_css)
         if match_comments_css:
-            article_comments_css = match_comments_css.group(1)
+            article_comments_css = int(match_comments_css.group(1))
             print(article_comments_css)
+        else:
+            article_comments_css = 0
         # 文章详情
         article_contents_css = response.css('.entry').extract()[0]
 
