@@ -19,7 +19,7 @@ class JobboleSpider(scrapy.Spider):
         2. 获取下一页的url并交给scrapy下载,完成后交给parse
         """
         # 解析列表页中的所有文章url并交给scrapy下载后解析
-        post_nodes = response.css('#archive .floated-thumb .post-thumb a').extract()
+        post_nodes = response.css('#archive .floated-thumb .post-thumb a')
         for post_node in post_nodes:
             # 抓取所有列表的首页图片
             image_url = post_node.css('img::attr(src)').extract_first('')
@@ -60,7 +60,6 @@ class JobboleSpider(scrapy.Spider):
         match_bookmark_css = re.match('.*(\d+).*', bookmark_css)
         if match_bookmark_css:
             article_bookmark_css = int(match_bookmark_css.group(1))
-            print(article_bookmark_css)
         else:
             article_bookmark_css = 0
 
@@ -69,7 +68,6 @@ class JobboleSpider(scrapy.Spider):
         match_comments_css = re.match('.*(\d+).*', comments_css)
         if match_comments_css:
             article_comments_css = int(match_comments_css.group(1))
-            print(article_comments_css)
         else:
             article_comments_css = 0
         # 文章详情
@@ -80,7 +78,6 @@ class JobboleSpider(scrapy.Spider):
         # 去重标签
         tag_list_css = [element for element in tag_list_css if not element.strip().endswith("评论")]
         tags_css = ','.join(tag_list_css)
-        print(tags_css)
 
         """ --------------    css   案例 end    --------------"""
 
@@ -88,9 +85,10 @@ class JobboleSpider(scrapy.Spider):
         article_item["create_date"] = article_time_css
         article_item["url"] = response.url
         article_item["front_image_url"] = front_image_url
-        article_item["front_image_path"] = scrapy.Field()
         article_item["praise_nums"] = article_praise_css
-        article_item["acomments_nums"] = article_comments_css
+        article_item["comments_nums"] = article_comments_css
         article_item["fav_nums"] = article_bookmark_css
         article_item["tags"] = tags_css
         article_item["content"] = article_contents_css
+
+        yield article_item
