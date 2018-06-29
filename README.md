@@ -95,7 +95,10 @@ execute(["scrapy", "crawl", "jobbole"])
 - 确保你的python/Anaconda处于环境变量中
 - 若无环境变量,可以查找相关scrapy路径,在其路径下进行cmd窗口打开
 
+## 第二步:执行要调试爬取网站的相关命令
+
 如下图:
 
+![scrapy-shell](https://github.com/unlimitbladeworks/scrapy_learn_bole/raw/master/blog-picture/scrapy-shell.png "scrapy-shell")
 
-##
+`scrapy shell http://blog.jobbole.com/all-posts/`
