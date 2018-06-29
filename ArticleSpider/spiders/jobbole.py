@@ -85,3 +85,12 @@ class JobboleSpider(scrapy.Spider):
         """ --------------    css   案例 end    --------------"""
 
         article_item["title"] = article_title_css
+        article_item["create_date"] = article_time_css
+        article_item["url"] = response.url
+        article_item["front_image_url"] = front_image_url
+        article_item["front_image_path"] = scrapy.Field()
+        article_item["praise_nums"] = article_praise_css
+        article_item["acomments_nums"] = article_comments_css
+        article_item["fav_nums"] = article_bookmark_css
+        article_item["tags"] = tags_css
+        article_item["content"] = article_contents_css

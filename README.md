@@ -85,3 +85,17 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 execute(["scrapy", "crawl", "jobbole"])
 ```
+
+----
+
+# scrapy-shell 进行调试
+
+## 第一步:打开cmd/shell 窗口
+
+- 确保你的python/Anaconda处于环境变量中
+- 若无环境变量,可以查找相关scrapy路径,在其路径下进行cmd窗口打开
+
+如下图:
+
+
+##
