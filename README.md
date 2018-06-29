@@ -97,8 +97,9 @@ execute(["scrapy", "crawl", "jobbole"])
 
 ## 第二步:执行要调试爬取网站的相关命令
 
+`scrapy shell http://blog.jobbole.com/all-posts/`
+
 如下图:
 
 ![scrapy-shell](https://github.com/unlimitbladeworks/scrapy_learn_bole/raw/master/blog-picture/scrapy-shell.png "scrapy-shell")
 
-`scrapy shell http://blog.jobbole.com/all-posts/`
