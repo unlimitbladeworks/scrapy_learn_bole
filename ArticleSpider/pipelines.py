@@ -5,6 +5,9 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.pipelines.images import ImagesPipeline
+# 文件操作的库,编码比普通的with open要好用
+import codecs
+import json
 
 
 class ArticlespiderPipeline(object):
@@ -12,10 +15,26 @@ class ArticlespiderPipeline(object):
         return item
 
 
+class JsonWithEncodingPipeline(object):
+    def __init__(self):
+        # 打开json文件,进行写入操作
+        self.file = codecs.open('article.json', 'w', encoding='utf-8')
+
+    def process_item(self, item, spider):
+        # 将item转为字典格式在转成str类型的 json格式
+        lines = json.dumps(dict(item), ensure_ascii=False) + '\n'
+        self.file.write(lines)
+        return item
+
+    def spider_close(self,spider):
+        self.file.close()
+
+
+
 class ArticleImagePipeline(ImagesPipeline):
     # 重写该方法可从result中获取到图片的实际下载地址
     def item_completed(self, results, item, info):
-        image_file_path = ''
+        image_file_path=''
         for ok, value in results:
             image_file_path = value["path"]
         item['image_file_path'] = image_file_path
