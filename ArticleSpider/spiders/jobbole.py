@@ -3,6 +3,9 @@ import scrapy
 import re
 from scrapy import Request
 from urllib import parse
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 from ArticleSpider.items import JobBoleArticleItem
 
 
@@ -71,7 +74,7 @@ class JobboleSpider(scrapy.Spider):
         else:
             article_comments_css = 0
         # 文章详情
-        article_contents_css = response.css('.entry').extract()[0]
+        article_contents_css = response.css('.entry').extract_first('')
 
         # 文章标签
         tag_list_css = response.css('p.entry-meta-hide-on-mobile a::text').extract()
@@ -84,7 +87,7 @@ class JobboleSpider(scrapy.Spider):
         article_item["title"] = article_title_css
         article_item["create_date"] = article_time_css
         article_item["url"] = response.url
-        article_item["front_image_url"] = front_image_url
+        article_item["front_image_url"] = [front_image_url]
         article_item["praise_nums"] = article_praise_css
         article_item["comments_nums"] = article_comments_css
         article_item["fav_nums"] = article_bookmark_css
