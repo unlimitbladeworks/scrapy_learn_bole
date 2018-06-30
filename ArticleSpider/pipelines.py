@@ -15,6 +15,7 @@ class ArticlespiderPipeline(object):
 class ArticleImagePipeline(ImagesPipeline):
     # 重写该方法可从result中获取到图片的实际下载地址
     def item_completed(self, results, item, info):
+        image_file_path = ''
         for ok, value in results:
             image_file_path = value["path"]
         item['image_file_path'] = image_file_path
