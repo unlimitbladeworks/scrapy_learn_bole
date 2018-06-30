@@ -87,6 +87,7 @@ class JobboleSpider(scrapy.Spider):
         article_item["title"] = article_title_css
         article_item["create_date"] = article_time_css
         article_item["url"] = response.url
+        # article_item[""] = response.url
         article_item["front_image_url"] = [front_image_url]
         article_item["praise_nums"] = article_praise_css
         article_item["comments_nums"] = article_comments_css
