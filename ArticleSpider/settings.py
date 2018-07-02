@@ -68,10 +68,10 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 # 使item 生效
 ITEM_PIPELINES = {
-   'ArticleSpider.pipelines.ArticlespiderPipeline': 300,
+   'ArticleSpider.pipelines.JsonExporterPipeline': 2,
    # 'scrapy.pipelines.images.ImagesPipeline' : 1
    'ArticleSpider.pipelines.ArticleImagePipeline': 1,
-   'ArticleSpider.pipelines.JsonWithEncodingPipeline' : 2
+   # 'ArticleSpider.pipelines.JsonWithEncodingPipeline' : 2
 }
 # 对应 item
 IMAGES_URLS_FIELD = "front_image_url"
