@@ -53,5 +53,5 @@ class ArticleImagePipeline(ImagesPipeline):
         image_file_path = ''
         for ok, value in results:
             image_file_path = value["path"]
-        item['image_file_path'] = image_file_path
+        item['front_image_path'] = image_file_path
         return item

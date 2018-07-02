@@ -27,4 +27,3 @@ class JobBoleArticleItem(scrapy.Item):
     fav_nums = scrapy.Field()
     tags = scrapy.Field()
     content = scrapy.Field()
-    image_file_path = scrapy.Field()
