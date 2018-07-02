@@ -5,9 +5,12 @@ from scrapy import Request
 from urllib import parse
 import sys
 import os
+import datetime
+
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 from ArticleSpider.items import JobBoleArticleItem
 from ArticleSpider.utils.common import get_md5
+
 
 class JobboleSpider(scrapy.Spider):
     name = 'jobbole'
@@ -85,6 +88,11 @@ class JobboleSpider(scrapy.Spider):
         """ --------------    css   案例 end    --------------"""
 
         article_item["title"] = article_title_css
+        # 将字符串时间转为日期
+        try:
+            article_time_css = datetime.datetime.strptime(article_time_css,'%Y/%m%d').date()
+        except Exception as e:
+            article_time_css = datetime.datetime.now().date()
         article_item["create_date"] = article_time_css
         article_item["url"] = response.url
         article_item["url_object_id"] = get_md5(response.url)
