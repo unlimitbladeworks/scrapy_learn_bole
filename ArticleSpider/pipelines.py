@@ -10,6 +10,8 @@ import codecs
 import json
 from scrapy.exporters import JsonItemExporter
 
+import MySQLdb
+
 
 class ArticlespiderPipeline(object):
     def process_item(self, item, spider):
@@ -30,6 +32,26 @@ class JsonWithEncodingPipeline(object):
 
     def spider_close(self, spider):
         self.file.close()
+
+
+"""
+spider解析速度超过入库速度,此种方法插入速度太慢,跟不上解析速度,commit时会阻塞
+所以不用此种方法
+"""
+
+
+class MysqlPineline(object):
+    def __init__(self):
+        self.conn = MySQLdb.connect('127.0.0.1', 'root', 'root123!', 'article_spider', charset='utf8', use_unicode=True)
+        self.cursor = self.conn.cursor()
+
+    def process_item(self, item, spider):
+        insert_sql = """
+            INSERT INTO jobbole_article (title,url,create_time,fav_nums) 
+            VALUES (%s,%s,%s,%s)
+        """
+        self.cursor.execute(insert_sql, (item['title'], item['url'], item['create_date'], item['fav_nums']))
+        self.conn.commit()
 
 
 class JsonExporterPipeline(object):
