@@ -10,7 +10,7 @@ import codecs
 import json
 from scrapy.exporters import JsonItemExporter
 
-import MySQLdb
+import pymysql
 
 
 class ArticlespiderPipeline(object):
@@ -42,7 +42,7 @@ spider解析速度超过入库速度,此种方法插入速度太慢,跟不上解
 
 class MysqlPineline(object):
     def __init__(self):
-        self.conn = MySQLdb.connect('127.0.0.1', 'root', 'root123!', 'article_spider', charset='utf8', use_unicode=True)
+        self.conn = pymysql.connect('127.0.0.1', 'root', 'root123!', 'article_spider', charset='utf8', use_unicode=True)
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
