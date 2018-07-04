@@ -38,7 +38,8 @@ class JsonExporterPipeline(object):
         self.file = open('articleexporter.json', 'wb')
         self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
         self.exporter.start_exporting()
-    def close_spider(self,spider):
+
+    def close_spider(self, spider):
         self.exporter.finish_exporting()
         self.file.close()
 
