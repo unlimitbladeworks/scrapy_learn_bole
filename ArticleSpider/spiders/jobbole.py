@@ -58,6 +58,12 @@ class JobboleSpider(scrapy.Spider):
 
         # 点赞数
         article_praise_css = response.css('#112048votetotal::text').extract_first('')
+        # 正则提取收藏数字
+        match_article_praise_css = re.match('.*(\d+).*', article_praise_css)
+        if match_article_praise_css:
+            article_praise_css = int(match_article_praise_css.group(1))
+        else:
+            article_praise_css = 0
 
         # 收藏数
         bookmark_css = response.css(
