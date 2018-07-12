@@ -9,11 +9,12 @@ from scrapy.pipelines.images import ImagesPipeline
 import codecs
 import json
 from scrapy.exporters import JsonItemExporter
-
+from twisted.enterprise import adbapi
 import pymysql
+import pymysql.cursors
 
 
-class ArticlespiderPipeline(object):
+class ArticleSpiderPipeline(object):
     def process_item(self, item, spider):
         return item
 
@@ -36,11 +37,11 @@ class JsonWithEncodingPipeline(object):
 
 """
 spider解析速度超过入库速度,此种方法插入速度太慢,跟不上解析速度,commit时会阻塞
-所以不用此种方法
+所以不用此种方法 MysqlPipeline
 """
 
 
-class MysqlPineline(object):
+class MysqlPipeline(object):
     def __init__(self):
         self.conn = pymysql.connect('127.0.0.1', 'root', '', 'article_spider', charset='utf8', use_unicode=True)
         self.cursor = self.conn.cursor()
@@ -56,6 +57,56 @@ class MysqlPineline(object):
                                          item['comments_nums'], item['fav_nums'], item['praise_nums'],
                                          item['tags'], item['content']))
         self.conn.commit()
+
+
+"""
+使用Twisted异步框架,进行mysql的连接,
+Twisted本身不提供链接,只是提供了异步容器,mysql链接还是需要自己完成
+"""
+
+
+class MysqlTwistedPipeline(object):
+
+    def __init__(self, db_pool):
+        self.db_pool = db_pool
+
+    # 声明函数,scrapy会将settings的文件内容读取进来
+    @classmethod
+    def from_settings(cls, settings):
+        # 将settings中的参数作为dict传入连接池中,dict的key需要和pymysql的Connection对应
+        db_params = dict(
+            host=settings['MYSQL_HOST'],
+            database=settings['MYSQL_DBNAME'],
+            user=settings['MYSQL_USER'],
+            password=settings['MYSQL_PASSWORD'],
+            charset='utf8',
+            cursorclass=pymysql.cursors.DictCursor,
+            use_unicode=True
+        )
+
+        db_pool = adbapi.ConnectionPool('pymysql', **db_params)
+        return cls(db_pool)
+
+    # 使用Twisted 将mysql插入变成异步操作
+    def process_item(self, item, spider):
+        query = self.db_pool.runInteraction(self.do_insert, item)
+        query.addErrorback(self.handle_error)
+
+    # 处理插入异常
+    def handle_error(self, failure, item, spider):
+        print(failure)
+
+    # 执行具体的插入逻辑
+    def do_insert(self, cursor, item):
+        insert_sql = """
+                    INSERT INTO jobbole_article (title,create_time,url,url_obejct_id,front_image_url,
+                    comment_nums,fav_nums,parise_nums,tags,content) 
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """
+        cursor.execute(insert_sql, (item['title'], item['create_date'], item['url'],
+                                    item['url_object_id'], item['front_image_url'],
+                                    item['comments_nums'], item['fav_nums'], item['praise_nums'],
+                                    item['tags'], item['content']))
 
 
 class JsonExporterPipeline(object):

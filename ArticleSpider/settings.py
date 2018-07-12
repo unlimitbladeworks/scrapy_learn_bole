@@ -68,11 +68,18 @@ ROBOTSTXT_OBEY = False
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 # 使item 生效
 ITEM_PIPELINES = {
+    # json's file export by self
     # 'ArticleSpider.pipelines.JsonExporterPipeline': 2,
+    # ImagesPipeline export by self
     # 'scrapy.pipelines.images.ImagesPipeline' : 1
+    # ArticleSpider extends ImagesPipeline export image
     # 'ArticleSpider.pipelines.ArticleImagePipeline': 2,
+    # 自定义json文件的导出
     # 'ArticleSpider.pipelines.JsonWithEncodingPipeline' : 2
-    'ArticleSpider.pipelines.MysqlPineline': 1
+    # 自定义插入Mysql
+    # 'ArticleSpider.pipelines.MysqlPipeline': 1
+    # 异步Twisted框架插入mysql
+    'ArticleSpider.pipelines.MysqlTwistedPipeline': 1
 
 }
 # 对应 item
@@ -99,3 +106,8 @@ IMAGES_STORE = os.path.join(project_url, 'image')
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+MYSQL_HOST = "127.0.0.1"
+MYSQL_DBNAME = "article_spider"
+MYSQL_USER = "root"
+MYSQL_PASSWORD = ""
