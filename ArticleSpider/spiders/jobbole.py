@@ -6,10 +6,11 @@ from urllib import parse
 import sys
 import os
 import datetime
-
-sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 from ArticleSpider.items import JobBoleArticleItem
 from ArticleSpider.utils.common import get_md5
+from scrapy.loader import ItemLoader
+
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 
 class JobboleSpider(scrapy.Spider):
@@ -96,7 +97,7 @@ class JobboleSpider(scrapy.Spider):
         article_item["title"] = article_title_css
         # 将字符串时间转为日期
         try:
-            article_time_css = datetime.datetime.strptime(article_time_css,'%Y/%m%d').date()
+            article_time_css = datetime.datetime.strptime(article_time_css, '%Y/%m%d').date()
         except Exception as e:
             article_time_css = datetime.datetime.now().date()
         article_item["create_date"] = article_time_css
@@ -108,5 +109,21 @@ class JobboleSpider(scrapy.Spider):
         article_item["fav_nums"] = article_bookmark_css
         article_item["tags"] = tags_css
         article_item["content"] = article_contents_css
+
+        # 通过item_loader加载item,目的：比原来的item便于维护
+        item_loader = ItemLoader(item=JobBoleArticleItem(), response=response)
+        item_loader.add_css("title", "div.entry-header h1::text")
+        item_loader.add_value("url", response.url)
+        item_loader.add_value("url_object_id", get_md5(response.url))
+        item_loader.add_css("create_date", 'p.entry-meta-hide-on-mobile::text')
+        item_loader.add_value("front_image_url", [front_image_url])
+        item_loader.add_css("praise_nums", '#112048votetotal::text')
+        item_loader.add_css("comments_nums", 'a[href="#article-comment"] span::text')
+        item_loader.add_css("fav_nums", '.btn-bluet-bigger.href-style.bookmark-btn.register-user-only::text')
+        item_loader.add_css("tags", 'p.entry-meta-hide-on-mobile a::text')
+        item_loader.add_css("content", '.entry')
+
+        # 必须调用此步骤
+        article_item = item_loader.load_item()
 
         yield article_item
