@@ -110,7 +110,7 @@ class JobboleSpider(scrapy.Spider):
         article_item["tags"] = tags_css
         article_item["content"] = article_contents_css
 
-        # 通过item_loader加载item,目的：比原来的item便于维护
+        ''' 通过item_loader加载item,目的：比原来的item便于维护 start'''
         item_loader = ItemLoader(item=JobBoleArticleItem(), response=response)
         item_loader.add_css("title", "div.entry-header h1::text")
         item_loader.add_value("url", response.url)
@@ -125,5 +125,6 @@ class JobboleSpider(scrapy.Spider):
 
         # 必须调用此步骤
         article_item = item_loader.load_item()
+        ''' 通过item_loader加载item,目的：比原来的item便于维护 end'''
 
         yield article_item
