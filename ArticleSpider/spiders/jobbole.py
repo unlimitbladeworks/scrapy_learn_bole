@@ -46,13 +46,15 @@ class JobboleSpider(scrapy.Spider):
 
     # 提取文章具体逻辑(文章详情)
     def parse_detail(self, response):
+
+        """
         # 实例化一个jobboleitem
         article_item = JobBoleArticleItem()
 
         # 获取meta,获取到Request的封面图提取出来
         front_image_url = response.meta.get('front_image_url', '')
 
-        """ --------------    css   案例 start    --------------"""
+        --------------    css   案例 start    --------------
         # 标题  extract_first()防止数组越界
         article_title_css = response.css('div.entry-header h1::text').extract_first('')
 
@@ -95,7 +97,7 @@ class JobboleSpider(scrapy.Spider):
         tag_list_css = [element for element in tag_list_css if not element.strip().endswith("评论")]
         tags_css = ','.join(tag_list_css)
 
-        """ --------------    css   案例 end    --------------"""
+        --------------    css   案例 end    --------------
 
         article_item["title"] = article_title_css
         # 将字符串时间转为日期
@@ -112,8 +114,11 @@ class JobboleSpider(scrapy.Spider):
         article_item["fav_nums"] = article_bookmark_css
         article_item["tags"] = tags_css
         article_item["content"] = article_contents_css
+        """
 
         ''' 通过item_loader加载item,目的：比原来的item便于维护 start'''
+        # 获取meta,获取到Request的封面图提取出来
+        front_image_url = response.meta.get('front_image_url', '')
         item_loader = ArticleItemLoad(item=JobBoleArticleItem(), response=response)
         item_loader.add_css("title", "div.entry-header h1::text")
         item_loader.add_value("url", response.url)
