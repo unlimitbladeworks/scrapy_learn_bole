@@ -91,7 +91,7 @@ class MysqlTwistedPipeline(object):
     def process_item(self, item, spider):
         query = self.db_pool.runInteraction(self.do_insert, item)
         # 添加自己的处理异常的函数
-        query.addErrback(self.handle_error,item,spider)
+        query.addErrback(self.handle_error, item, spider)
 
     # 处理插入异常
     def handle_error(self, failure, item, spider):
@@ -130,7 +130,8 @@ class ArticleImagePipeline(ImagesPipeline):
     # 重写该方法可从result中获取到图片的实际下载地址
     def item_completed(self, results, item, info):
         image_file_path = ''
-        for ok, value in results:
-            image_file_path = value["path"]
-        item['front_image_path'] = image_file_path
+        if "front_image_url" in item:
+            for ok, value in results:
+                image_file_path = value["path"]
+            item['front_image_path'] = image_file_path
         return item

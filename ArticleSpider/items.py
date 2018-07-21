@@ -45,6 +45,18 @@ def get_nums(value):
     return nums
 
 
+# tags标签里,去掉提取的评论
+def remove_comment_tags(value):
+    if "评论" in value:
+        return ""
+    else:
+        return value
+
+
+def return_value(value):
+    return value
+
+
 # 自定义文章Item
 class JobBoleArticleItem(scrapy.Item):
     """
@@ -61,7 +73,10 @@ class JobBoleArticleItem(scrapy.Item):
     )
     url = scrapy.Field()
     url_object_id = scrapy.Field()
-    front_image_url = scrapy.Field()
+    front_image_url = scrapy.Field(
+        # 因为front_image_url返回必须是list,所以不能用ArticleItemLoad中的output_processor
+        output_processor=MapCompose(return_value)
+    )
     front_image_path = scrapy.Field()
     praise_nums = scrapy.Field(
         input_processor=MapCompose(get_nums)
@@ -73,7 +88,7 @@ class JobBoleArticleItem(scrapy.Item):
         input_processor=MapCompose(get_nums)
     )
     tags = scrapy.Field(
-        #input_processor=MapCompose(get_nums),
+        input_processor=MapCompose(remove_comment_tags),
         output_processor=Join(",")
     )
     content = scrapy.Field()
