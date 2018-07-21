@@ -8,7 +8,10 @@ import os
 import datetime
 from ArticleSpider.items import JobBoleArticleItem
 from ArticleSpider.utils.common import get_md5
-from scrapy.loader import ItemLoader
+from ArticleSpider.items import ArticleItemLoad
+
+# from scrapy.loader import ItemLoader reason:这是scrapy自带的ItemLoad,注释掉不用,如果字段太多,用这种并不方便
+
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
@@ -58,7 +61,7 @@ class JobboleSpider(scrapy.Spider):
             '·', '').strip()
 
         # 点赞数
-        article_praise_css = response.css('#112048votetotal::text').extract_first('')
+        article_praise_css = response.css('.vote-post-up h10::text').extract_first('')
         # 正则提取收藏数字
         match_article_praise_css = re.match('.*(\d+).*', article_praise_css)
         if match_article_praise_css:
@@ -111,13 +114,13 @@ class JobboleSpider(scrapy.Spider):
         article_item["content"] = article_contents_css
 
         ''' 通过item_loader加载item,目的：比原来的item便于维护 start'''
-        item_loader = ItemLoader(item=JobBoleArticleItem(), response=response)
+        item_loader = ArticleItemLoad(item=JobBoleArticleItem(), response=response)
         item_loader.add_css("title", "div.entry-header h1::text")
         item_loader.add_value("url", response.url)
         item_loader.add_value("url_object_id", get_md5(response.url))
         item_loader.add_css("create_date", 'p.entry-meta-hide-on-mobile::text')
         item_loader.add_value("front_image_url", [front_image_url])
-        item_loader.add_css("praise_nums", '#112048votetotal::text')
+        item_loader.add_css("praise_nums", '.vote-post-up h10::text')
         item_loader.add_css("comments_nums", 'a[href="#article-comment"] span::text')
         item_loader.add_css("fav_nums", '.btn-bluet-bigger.href-style.bookmark-btn.register-user-only::text')
         item_loader.add_css("tags", 'p.entry-meta-hide-on-mobile a::text')
