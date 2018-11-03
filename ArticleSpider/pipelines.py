@@ -66,7 +66,6 @@ Twisted本身不提供链接,只是提供了异步容器,mysql链接还是需要
 
 
 class MysqlTwistedPipeline(object):
-
     def __init__(self, db_pool):
         self.db_pool = db_pool
 
@@ -99,15 +98,8 @@ class MysqlTwistedPipeline(object):
 
     # 执行具体的插入逻辑
     def do_insert(self, cursor, item):
-        insert_sql = """
-                    INSERT INTO jobbole_article (title,create_time,url,url_obejct_id,front_image_url,
-                    comment_nums,fav_nums,parise_nums,tags,content) 
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                """
-        cursor.execute(insert_sql, (item['title'], item['create_date'], item['url'],
-                                    item['url_object_id'], item['front_image_url'],
-                                    item['comments_nums'], item['fav_nums'], item['praise_nums'],
-                                    item['tags'], item['content']))
+        insert_sql, params = item.get_insert_lagou_sql()
+        cursor.execute(insert_sql, params)
 
 
 class JsonExporterPipeline(object):

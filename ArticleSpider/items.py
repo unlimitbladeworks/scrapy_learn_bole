@@ -10,6 +10,7 @@ import re
 import scrapy
 from scrapy.loader.processors import MapCompose, TakeFirst, Join
 from scrapy.loader import ItemLoader
+from w3lib.html import remove_tags
 
 
 class ArticlespiderItem(scrapy.Item):
@@ -24,7 +25,7 @@ def add_jobbole(value):
 
 def date_convert(value):
     try:
-        create_date = datetime.datetime.strptime(value, '%Y/%m%d').date()
+        create_date = datetime.datetime.strptime(value, '%Y%m%d').date()
     except Exception as e:
         create_date = datetime.datetime.now().date()
     return create_date
@@ -92,3 +93,87 @@ class JobBoleArticleItem(scrapy.Item):
         output_processor=Join(",")
     )
     content = scrapy.Field()
+
+    def get_insert_bole_sql(self):
+        insert_sql = """
+                            INSERT INTO jobbole_article (title,create_time,url,url_obejct_id,front_image_url,
+                            comment_nums,fav_nums,parise_nums,tags,content) 
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                        """
+
+        params = (
+            self['title'], self['create_date'], self['url'],
+            self['url_object_id'], self['front_image_url'],
+            self['comments_nums'], self['fav_nums'], self['praise_nums'],
+            self['tags'], self['content']
+        )
+        return insert_sql, params
+
+
+# 自定义ItemLoad,重载scrapy自带的ItemLoader
+class LaGouItemLoad(ItemLoader):
+    default_output_processor = TakeFirst()
+
+
+def remove_splash(value):
+    """ 去掉工作城市的/ """
+    return value.replace('/', '').replace(' ', '')
+
+
+def handle_addr(value):
+    """ 清理工作地点的值 """
+    addr_list = value.split('\n')
+    addr_list = [item.strip() for item in addr_list if item.strip() != '查看地图']
+    return ''.join(addr_list)
+
+
+SQL_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+
+class LaGouItem(scrapy.Item):
+    """ 拉钩网对应入库scrapy字段 """
+    url = scrapy.Field()  # 拉钩url地址
+    url_object_id = scrapy.Field()  # url的hashid
+    title = scrapy.Field()  # 招聘标题
+    salary = scrapy.Field()  # 薪资
+    job_city = scrapy.Field(  # 工作城市
+        input_processor=MapCompose(remove_splash),  # MapCompose,可以对传入的字段进入函数处理
+    )
+    work_years = scrapy.Field(  # 工作年限
+        input_processor=MapCompose(remove_splash),
+    )
+    degree_need = scrapy.Field(  # 学历要求
+        input_processor=MapCompose(remove_splash),
+    )
+    job_type = scrapy.Field()  # 工作类型(全职/兼职)
+    publish_time = scrapy.Field()  # 发布时间
+    tags = scrapy.Field(  # 工作标签
+        input_processor=Join(',')
+    )
+    job_advantage = scrapy.Field()  # 福利待遇
+    job_desc = scrapy.Field()  # 工作描述
+    job_addr = scrapy.Field(  # 工作地点
+        input_processor=MapCompose(remove_tags, handle_addr),
+    )
+    company_url = scrapy.Field()  # 公司网址url
+    company_name = scrapy.Field()  # 公司名称
+    crawl_time = scrapy.Field()  # 抓取时间
+    crawl_update_time = scrapy.Field()  # 更新时间
+
+    def get_insert_lagou_sql(self):
+        insert_lagou_sql = """
+            insert into lagou_job(url,url_object_id,title,salary,job_city,
+            work_years,degree_need,job_type,publish_time,tags,job_advantage,
+            job_desc,job_addr,company_url,company_name,crawl_time)
+            values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE salary=VALUES(salary),job_desc=VALUES(job_desc)
+        """
+
+        params = (
+            self['url'], self['url_object_id'], self['title'], self['salary'], self['job_city'],
+            self['work_years'], self['degree_need'], self['job_type'], self['publish_time'], self['tags'],
+            self['job_advantage'], self['job_desc'], self['job_addr'], self['company_url'], self['company_name'],
+            self['crawl_time'].strftime(SQL_DATETIME_FORMAT),
+        )
+
+        return insert_lagou_sql, params
