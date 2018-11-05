@@ -4,7 +4,7 @@ CREATE TABLE douban
   COMMENT '根据url生成的唯一hash值'
     PRIMARY KEY,
   douban_url    VARCHAR(200) NOT NULL
-  COMMENT '豆瓣短评url',
+  COMMENT '用户主页url',
   user_name     VARCHAR(20)  NOT NULL
   COMMENT '评论的用户名',
   is_view       VARCHAR(10)  NULL

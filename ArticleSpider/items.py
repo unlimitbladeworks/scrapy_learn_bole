@@ -179,6 +179,11 @@ class LaGouItem(scrapy.Item):
         return insert_lagou_sql, params
 
 
+# 自定义ItemLoad,重载scrapy自带的ItemLoader
+class DouBanItemLoad(ItemLoader):
+    default_output_processor = TakeFirst()
+
+
 class DouBanItem(scrapy.Item):
     douban_url = scrapy.Field()  # 地址
     url_hashid = scrapy.Field()  # 唯一值
