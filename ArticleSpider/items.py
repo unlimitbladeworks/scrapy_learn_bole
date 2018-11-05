@@ -177,3 +177,14 @@ class LaGouItem(scrapy.Item):
         )
 
         return insert_lagou_sql, params
+
+
+class DouBanItem(scrapy.Item):
+    douban_url = scrapy.Field()  # 地址
+    url_hashid = scrapy.Field()  # 唯一值
+    user_name = scrapy.Field()  # 用户名
+    is_view = scrapy.Field()  # 是否看过电影
+    star_number = scrapy.Field()  # 评价星级
+    comment_time = scrapy.Field()  # 评价日期
+    votes_numbers = scrapy.Field()  # 投票数,有用
+    short_comment = scrapy.Field()  # 段评论
