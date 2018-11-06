@@ -11,6 +11,7 @@ class DoubanSpider(scrapy.Spider):
     name = "douban"
     allowed_domains = ["movie.douban.com"]
     start_urls = ['https://movie.douban.com/subject/24852545/comments?sort=new_score&status=P']
+    #start_urls = ['https://movie.douban.com/review/best/']
 
     def parse(self, response):
         """ 交给parse_details 进行处理 """

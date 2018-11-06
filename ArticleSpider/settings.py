@@ -14,7 +14,7 @@ BOT_NAME = 'ArticleSpider'
 
 SPIDER_MODULES = ['ArticleSpider.spiders']
 NEWSPIDER_MODULE = 'ArticleSpider.spiders'
-
+RANDOM_UA_TYPE = 'random'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'ArticleSpider (+http://www.yourdomain.com)'
 
@@ -54,9 +54,10 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'ArticleSpider.middlewares.ArticlespiderDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    'ArticleSpider.middlewares.RandomUserAgentMiddleware': 400
+    # 'ArticleSpider.middlewares.ArticlespiderDownloaderMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
