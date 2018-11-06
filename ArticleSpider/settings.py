@@ -9,6 +9,10 @@ import os
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import sys
+
+# scrapy的入口,将ArticleSpider加入python系统文件中,以防scrapy shell调试报错!!
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 BOT_NAME = 'ArticleSpider'
 
