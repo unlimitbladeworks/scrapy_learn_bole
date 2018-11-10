@@ -193,3 +193,19 @@ class DouBanItem(scrapy.Item):
     comment_time = scrapy.Field()  # 评价日期
     votes_numbers = scrapy.Field()  # 投票数,有用
     short_comment = scrapy.Field()  # 段评论
+
+
+
+    def get_insert_lagou_sql(self):
+        insert_lagou_sql = """
+            insert into douban(url_hashid,douban_url,user_name,is_view,star_number,
+            comment_time,votes_numbers,short_comment)
+            values (%s, %s, %s, %s, %s, %s, %s, %s)
+        """
+
+        params = (
+            self['url_hashid'], self['douban_url'], self['user_name'], self['is_view'], self['star_number'],
+            self['comment_time'], self['votes_numbers'], self['short_comment']
+        )
+
+        return insert_lagou_sql, params
