@@ -98,7 +98,7 @@ class MysqlTwistedPipeline(object):
 
     # 执行具体的插入逻辑
     def do_insert(self, cursor, item):
-        insert_sql, params = item.get_insert_lagou_sql()
+        insert_sql, params = item.get_insert_sql()
         cursor.execute(insert_sql, params)
 
 

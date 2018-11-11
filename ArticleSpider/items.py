@@ -160,7 +160,7 @@ class LaGouItem(scrapy.Item):
     crawl_time = scrapy.Field()  # 抓取时间
     crawl_update_time = scrapy.Field()  # 更新时间
 
-    def get_insert_lagou_sql(self):
+    def get_insert_sql(self):
         insert_lagou_sql = """
             insert into lagou_job(url,url_object_id,title,salary,job_city,
             work_years,degree_need,job_type,publish_time,tags,job_advantage,
@@ -208,8 +208,8 @@ class DouBanItem(scrapy.Item):
 
 
 
-    def get_insert_douban_sql(self):
-        insert_lagou_sql = """
+    def get_insert_sql(self):
+        insert_douban_sql = """
             insert into douban(url_hashid,douban_url,user_name,is_view,star_number,
             comment_time,votes_numbers,short_comment)
             values (%s, %s, %s, %s, %s, %s, %s, %s)
@@ -220,4 +220,4 @@ class DouBanItem(scrapy.Item):
             self['comment_time'], self['votes_numbers'], self['short_comment']
         )
 
-        return insert_lagou_sql, params
+        return insert_douban_sql, params
