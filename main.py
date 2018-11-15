@@ -15,5 +15,11 @@ from scrapy.cmdline import execute
 import sys
 import os
 
+from analysis.analysis_data import AnalysisData
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-execute(["scrapy", "crawl", "douban"])
+# execute(["scrapy", "crawl", "douban"])
+
+
+if __name__ == '__main__':
+    analysisData = AnalysisData()
