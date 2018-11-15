@@ -19,7 +19,7 @@ class MysqlDb(object):
     def __init__(self, db_pool):
         self.db_pool = db_pool
 
-    # 声明函数,scrapy会将settings的文件内容读取进来
+    # 声明函数,上层调用scrapy自带utils模块，将settings的文件内容读取进来
     @classmethod
     def from_settings(cls, settings):
         # 将settings中的参数作为dict传入连接池中,dict的key需要和pymysql的Connection对应
@@ -36,17 +36,18 @@ class MysqlDb(object):
         db_pool = adbapi.ConnectionPool('pymysql', **db_params)
         return cls(db_pool)
 
-    # 使用Twisted 将mysql插入变成异步操作
-    def process_item(self):
-        query = self.db_pool.runInteraction(self.do_insert)
+    # 使用Twisted 将mysql变成异步操作
+    def process_item(self, item):
+        query = self.db_pool.runInteraction(self.do_select, item)
         # 添加自己的处理异常的函数
         query.addErrback(self.handle_error)
+        return query
 
-    # 处理插入异常
+    # 处理执行异常打印踹
     def handle_error(self, failure):
         print(failure)
 
-    # 执行具体的插入逻辑
-    def do_insert(self, cursor):
-        insert_sql, params = item.get_insert_sql()
-        cursor.execute(insert_sql, params)
+    # 执行具体自定义的执行sql逻辑
+    def do_select(self, cursor, item):
+        select_sql = item.get_select_sql()
+        cursor.execute(select_sql)
