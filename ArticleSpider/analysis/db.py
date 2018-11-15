@@ -36,8 +36,8 @@ class MysqlDb(object):
         db_pool = adbapi.ConnectionPool('pymysql', **db_params)
         return cls(db_pool)
 
-    # 使用Twisted 将mysql变成异步操作
-    def process_item(self, item):
+    # 使用Twisted 将mysql变成异步操作，第一种方式，此方式可以自定义操作，增删改查都可以
+    def process_item_interaction(self, item):
         query = self.db_pool.runInteraction(self.do_select, item)
         # 添加自己的处理异常的函数
         query.addErrback(self.handle_error)
@@ -51,3 +51,12 @@ class MysqlDb(object):
     def do_select(self, cursor, item):
         select_sql = item.get_select_sql()
         cursor.execute(select_sql)
+        return cursor.fetchall()
+
+    # 使用Twisted 将mysql变成异步操作,第二种方式查询方式！
+    def process_item_query(self, item):
+        query = self.db_pool.runQuery(item.get_select_sql())
+        # 添加自己的处理异常的函数
+        query.addErrback(self.handle_error)
+        return query
+

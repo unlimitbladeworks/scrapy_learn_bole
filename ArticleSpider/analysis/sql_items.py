@@ -1,17 +1,20 @@
-#coding = utf-8
+# coding = utf-8
 
 """
 @author: sy
 
-@file: sql_byself.py
+@file: sql_items.py
 
 @time: 2018/11/15 21:14
 
-@desc: 自定义sql
+@desc: 根据不同的需求定制不同类的自定义sql
 
 """
-class SqlBySelf(object):
 
-    def select_comments(self):
-        # todo 待添加查询评论的sql
-        pass
+
+# 豆瓣自定义sql
+class DouBanSqlItems(object):
+    def get_select_sql(self):
+        """ 查询评论的sql """
+        select_comments = "SELECT t.short_comment from douban t"
+        return select_comments

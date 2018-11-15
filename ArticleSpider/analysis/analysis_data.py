@@ -15,19 +15,28 @@ import wordcloud
 import pyecharts
 from scrapy.utils.project import get_project_settings
 
+from analysis.sql_items import DouBanSqlItems
 from .db import MysqlDb
 
+from twisted.internet import reactor
 
 class AnalysisData(object):
-    def get_data(self):
-        """ 获取mysql数据库中的相对数据"""
+
+    def __init__(self):
+        """ 初始化获取mysql数据库中的相对数据"""
         setting = get_project_settings()
         mysqlDb = MysqlDb.from_settings(setting)
-        mysqlDb.process_item()
+        douBanSqlItems = DouBanSqlItems()
+        query_result = mysqlDb.process_item_interaction(douBanSqlItems)
+        query_result.addCallback(self.word_count)
+        reactor.run()
 
-    def word_count(self):
+
+    def word_count(self,data):
         # todo 词频统计分析
-
+        if data:
+            for short_comments in data:
+                print(short_comments)
         pass
 
     def draw_picture(self):
