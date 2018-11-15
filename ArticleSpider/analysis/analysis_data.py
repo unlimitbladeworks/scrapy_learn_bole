@@ -15,9 +15,19 @@ import wordcloud
 import pyecharts
 from scrapy.utils.project import get_project_settings
 
+from .db import MysqlDb
+
+
 class AnalysisData(object):
+    def get_data(self):
+        """ 获取mysql数据库中的相对数据"""
+        setting = get_project_settings()
+        mysqlDb = MysqlDb.from_settings(setting)
+        mysqlDb.process_item()
+
     def word_count(self):
         # todo 词频统计分析
+
         pass
 
     def draw_picture(self):
